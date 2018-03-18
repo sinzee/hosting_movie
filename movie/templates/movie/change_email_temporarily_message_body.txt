@@ -1,0 +1,3 @@
+Your email address has changed temporarily.
+Click below link, then change completes
+{{ scheme }}://{{ domain }}{% url 'user-email-edit-completely' token=token new_email=new_email %}

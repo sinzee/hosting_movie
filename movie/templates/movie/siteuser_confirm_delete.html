@@ -1,0 +1,14 @@
+{% extends 'movie/base.html' %}
+
+{% block content %}
+
+<h1>Delete Your Account</h1>
+
+<p>Are you sure you want to delete your account: {{ siteuser }}?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" action="" value="Yes, delete." />
+</form>
+
+{% endblock %}

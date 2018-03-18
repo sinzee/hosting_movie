@@ -99,3 +99,16 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Text backup files
+*.bak
+
+# Database
+*.sqlite3
+
+# migrations
+migrations
+
+# static files
+media/
+static/

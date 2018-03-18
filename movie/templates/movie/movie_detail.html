@@ -1,0 +1,26 @@
+{% extends 'movie/base.html' %}
+
+{% block content %}
+<h1>Movie title: {{ movie.movie_name }}</h1>
+<h2>Description</h2>
+<p style="white-space:pre-wrap;">{{ movie.description }}</p>
+<h2>Uploader</h2>
+<p>
+    <a href="{% url 'user-detail' movie.uploader.pk %}">{{ movie.uploader }}</a>
+</p>
+<video src="{{ movie.uploaded_file.url }}" controls preload="metadata" style="width: 80%; max-width:1000px"></video>
+
+<h2>Comment</h2>
+<a href="{% url 'create-comment' movie.pk %}">Add comment</a>
+
+{% if movie.comment_set.all %}
+    {% for comment in movie.comment_set.all %}
+        <li style="white-space:pre-wrap;">{{ comment.description }} ({{ comment.commenter }})</li>
+    {% endfor %}
+
+{% else %}
+    <p>No Comment.</p>
+
+{% endif %}
+
+{% endblock %}

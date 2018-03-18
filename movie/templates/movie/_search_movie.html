@@ -1,0 +1,7 @@
+{% comment %}
+    Usage: {% include "movie/_movie_search.html" %}
+{% endcomment %}
+<form action="{% url 'movie-list' %}" method="GET">
+    <input type="text" name="q" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" />
+    <button type="submit">search</button>
+</form>

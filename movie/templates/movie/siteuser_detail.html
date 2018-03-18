@@ -1,0 +1,25 @@
+{% extends 'movie/base.html' %}
+
+{% block content %}
+
+<h1>User Profile</h1>
+<p>{{ siteuser.user.first_name }} {{ siteuser.user.last_name }}</p>
+
+<h2>Biography</h2>
+<p style="white-space:pre-wrap;">{{ siteuser.bio }}</p>
+
+<h2>Uploaded Movies</h2>
+
+{% if siteuser.movie_set.all %}
+    <ul>
+        {% for movie in siteuser.movie_set.all %}
+            <li><a href="{% url 'movie-detail' movie.pk  %}">{{ movie.movie_name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>No uploaded Movies.</p>
+
+{% endif %}
+
+{% endblock %}

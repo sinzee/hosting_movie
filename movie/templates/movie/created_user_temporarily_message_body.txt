@@ -1,0 +1,3 @@
+Your account has registered temporarily.
+Click below link, then registration complete
+{{ scheme }}://{{ domain }}{% url 'created-user-completely' uidb64=uid token=token %}

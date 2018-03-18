@@ -1,0 +1,23 @@
+{% extends 'movie/base.html' %}
+
+{% block content %}
+
+<h1>Movies</h1>
+
+{% if movie_list %}
+    <ul>
+    {% for movie in movie_list %}
+        <li>
+            <a href="{% url 'movie-detail' movie.id %}">{{ movie.movie_name }}</a>
+            {{ movie.uploader }}
+            ( {{ movie.post_date }} )
+            {{ movie.description }}
+        </li>
+    {% endfor %}
+    </ul>
+
+{% else %}
+    <p>No Movies.</p>
+{% endif %}
+
+{% endblock %}

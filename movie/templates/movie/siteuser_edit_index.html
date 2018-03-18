@@ -1,0 +1,33 @@
+{% extends 'movie/base.html' %}
+{% block content %}
+    <h1>Edit User Information</h1>
+
+    <h2>User Profile</h2>
+    <ul>
+        <li><a href="{% url 'user-name-edit' %}">Username</a></li>
+        <li><a href="{% url 'user-bio-edit' %}">Biography</a></li>
+        <li><a href="{% url 'user-email-edit' %}">Email address</a></li>
+        <li><a href="{% url 'password_change' %}">Password</a></li>
+    </ul>
+    <ul>
+        <li><a href="{% url 'user-delete' %}">Delete your account?</a></li>
+    </ul>
+    <h2>Uploaded Movie</h2>
+    {% if siteuser.movie_set.all %}
+        <ul>
+            {% for movie in siteuser.movie_set.all %}
+                <li><a href="{% url 'movie-edit' movie.pk  %}">{{ movie.movie_name }}</a></li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>No uploaded Movies.</p>
+
+    {% endif %}
+
+    <h2>Upload Movie</h2>
+    <ul>
+        <li><a href="{% url 'upload-movie' %}">Upload form</li>
+    </ul>
+
+{% endblock %}

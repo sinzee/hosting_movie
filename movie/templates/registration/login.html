@@ -1,0 +1,34 @@
+{% extends "movie/base.html" %}
+
+{% block content %}
+
+<h1>Login</h1>
+
+{% if form.errors %}
+<p>Your email address and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  <p>Your account doesn't have access to this page. To proceed,
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+
+<div>
+  <table>
+    {{ form }}
+  </table>
+</div>
+
+<div>
+  <input type="submit" value="login" />
+  <input type="hidden" name="next" value="{{ next }}" />
+</div>
+</form>
+
+{# Assumes you setup the password_reset view in your URLconf #}
+<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+<p><a href="{% url 'create-user' %}">Create User</a></p>
+
+{% endblock %}
