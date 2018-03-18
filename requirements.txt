@@ -1,0 +1,4 @@
+Django==1.11.10
+mod-wsgi==4.6.2
+python-magic==0.4.15
+pytz==2017.3
