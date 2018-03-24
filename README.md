@@ -39,5 +39,5 @@ python ./manage.py test
 ```
 python ./manage.py runserver 0:8000
 ```
-7. access your server IP address via your browser, for example "http://192.168.1.2:8000/"
+8. access your server IP address via your browser, for example "http://192.168.1.2:8000/"
 
