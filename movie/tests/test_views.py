@@ -747,13 +747,22 @@ class MovieSearchTest(TestCase):
         upload_file = mock.MagicMock(spec=File, name='FileMock')
         upload_file.name = 'file_name.mp4'
         movie_count = 13
+        cls.movie_list = []
         for num in range(movie_count):
-            movie = Movie.objects.create(
-                        uploader=site_user,
-                        description='movie description',
-                        movie_name='movie title ' + str(num),
-                        uploaded_file=upload_file,
-                    )
+            cls.movie_list.append(
+                                    Movie.objects.create(
+                                        uploader=site_user,
+                                        description='movie description',
+                                        movie_name='movie title ' + str(num),
+                                        uploaded_file=upload_file,
+                                    )
+                                 )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        for movie in cls.movie_list:
+            movie.delete()
 
     def setUp(self):
         self.resp = self.client.get(self.url_path)
@@ -818,6 +827,11 @@ class MovieDetailTest(TestCase):
                          movie_name='movie title ',
                          uploaded_file=upload_file,
                      )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie.delete()
 
     def setUp(self):
         self.resp = self.client.get(
@@ -910,6 +924,7 @@ class MovieCreateTest(TestCase):
                 movie_id=movie_object.pk
             )
         )
+        movie_object.delete()
 
     def test_upload_movie_name_is_random(self):
         login = self.client.login(username=self.mail_address1, password=self.password1)
@@ -928,6 +943,7 @@ class MovieCreateTest(TestCase):
         uploaded_file_name, uploaded_file_ext = upload_file.name.rsplit('.', 1)
         saved_file_name = os.path.basename(movie_object.uploaded_file.name)
         self.assertNotEqual(saved_file_name.find(uploaded_file_name), 0)
+        movie_object.delete()
 
 
 class MovieUpdateTest(TestCase):
@@ -959,6 +975,11 @@ class MovieUpdateTest(TestCase):
                         movie_name='movie title',
                         uploaded_file=upload_file,
                     )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie.delete()
 
     def test_redirect_login_page_when_you_has_not_logined(self):
         request_path = self.url_path.format(
@@ -1096,6 +1117,11 @@ class MovieDeleteTest(TestCase):
                         uploaded_file=upload_file,
                     )
 
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie.delete()
+
     def test_redirect_login_page_when_you_has_not_logined(self):
         request_path = self.url_path.format(
                            movie_id=self.movie.pk
@@ -1207,6 +1233,11 @@ class MovieCommentCreateTest(TestCase):
                         movie_name='movie title ',
                         uploaded_file=upload_file,
                     )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie.delete()
 
     def test_view_url_exists_at_desired_location(self):
         login = self.client.login(username=self.mail_address2, password=self.password2)

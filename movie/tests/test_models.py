@@ -84,6 +84,11 @@ class MovieModelTest(TestCase):
             description=description1
         )
 
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie1.delete()
+
     def setUp(self):
         self.movie = Movie.objects.get(id=str(self.movie1.id))
 
@@ -186,6 +191,11 @@ class CommentModelTest(TestCase):
                                         '0123456789'\
                                         '0123456789'\
                         )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        cls.movie1.delete()
 
     def test_commenter_label(self):
         field_name = self.comment1._meta.get_field('commenter').verbose_name
