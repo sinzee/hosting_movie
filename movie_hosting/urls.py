@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='index'), name='top-page'),
     url(r'^movie/', include('movie.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^api/v1/', include('movie.api.urls')),
 ]
 
 # This is not needed because this helper function works only in debug mode
