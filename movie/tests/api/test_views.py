@@ -1,3 +1,4 @@
+import json
 import os.path
 
 from django.contrib.auth.models import User
@@ -15,7 +16,6 @@ class RestApiTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url_path = '/api/v1/user/'
-        cls.url_name = 'api-user'
 
         mail_address = 'test@example.com'
         test_user = User.objects.create_user(
@@ -30,10 +30,43 @@ class RestApiTest(TestCase):
                             bio='user bio'
                         )
 
-    def setUp(self):
-        self.resp = self.client.get(self.url_path)
-
     def test_view_url_exists_at_desired_location(self):
-        self.assertEqual(self.resp.status_code, 200)
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_api_gets_user_list(self):
+        resp = self.client.get(self.url_path)
+        expected_data = [
+                            {
+                                'url': 'http://testserver{path}{pk}/'.format(
+                                            path=self.url_path,
+                                            pk=self.site_user.pk
+                                       ),
+                                'bio': 'user bio',
+                            },
+                        ]
+        self.assertEqual(
+            json.loads(resp.content),
+            expected_data
+        )
+
+    def test_api_gets_user_detail(self):
+        resp = self.client.get(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.site_user.pk
+                )
+               )
+        expected_data = {
+                            'url': 'http://testserver{path}{pk}/'.format(
+                                        path=self.url_path,
+                                        pk=self.site_user.pk
+                                   ),
+                            'bio': 'user bio',
+                        }
+        self.assertEqual(
+            json.loads(resp.content),
+            expected_data
+        )
 
 
