@@ -48,7 +48,6 @@ class RestApiTest(TestCase):
                                 'bio': self.bio,
                                 'user': {
                                     'id': self.test_user.pk,
-                                    'username': self.mail_address,
                                     'email': self.mail_address,
                                     'first_name': self.first_name,
                                     'last_name': self.last_name,
