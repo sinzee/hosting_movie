@@ -368,4 +368,16 @@ class RestApiCommentTest(TestCase):
         comment_obj = Comment.objects.get(pk=self.comment.pk)
         self.assertEqual(comment_obj.description, new_comment)
 
+    def test_delete_comment_via_rest_api(self):
+        comment_pk = self.comment.pk
+        resp = self.client.delete(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=comment_pk
+                )
+               )
+        self.assertEqual(resp.status_code, 204)
+        comment_obj = Comment.objects.filter(pk=comment_pk)
+        self.assertFalse(comment_obj.exists())
+        
 
