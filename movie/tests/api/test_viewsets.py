@@ -236,3 +236,15 @@ class RestApiMovieTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         movie_obj = Movie.objects.get(pk=self.movie.pk)
         self.assertEqual(movie_obj.movie_name, new_movie_name)
+
+    def test_delete_movie_via_rest_api(self):
+        resp = self.client.delete(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.movie.pk
+                )
+               )
+        self.assertEqual(resp.status_code, 204)
+        movie_obj = Movie.objects.filter(pk=self.movie.pk)
+        self.assertFalse(movie_obj.exists())
+
