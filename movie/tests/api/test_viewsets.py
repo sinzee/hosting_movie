@@ -249,23 +249,25 @@ class RestApiMovieTest(TestCase):
         movie_obj = Movie.objects.filter(pk=self.movie.pk)
         self.assertFalse(movie_obj.exists())
 
-#    def test_create_movie_via_rest_api(self):
-#        movie_name = 'movie title'
-#        description = 'movie desc'
-#        mp4_number_file = SimpleUploadedFile('test_movie.mp4', b'\x00\x00\x00 ftypisom\x00\x00\x02\x00')
-#        upload_data = {
-#            'uploader': self.site_user.pk,
-#            'movie_name': movie_name,
-#            'description': description,
-#            'uploaded_file': mp4_number_file,
-#        }
-#        resp = self.client.post(
-#                self.url_path,
-#                data=upload_data,
-#                format='multipart'
-#               )
-#        self.assertEqual(resp.status_code, 201)
-#        #movie_id = json.loads(resp.content)['url']
-#        movie_obj = Movie.objects.get(pk=2)
-#        #print(movie_obj.movie_name)
-#        #print(movie_obj.uploaded_file)
+    def test_create_movie_via_rest_api(self):
+        movie_name = 'movie title'
+        description = 'movie desc'
+        mp4_number_file = SimpleUploadedFile('test_movie.mp4', b'\x00\x00\x00 ftypisom\x00\x00\x02\x00')
+        upload_data = {
+            'uploader': self.site_user.pk,
+            'movie_name': movie_name,
+            'description': description,
+            'uploaded_file': mp4_number_file,
+        }
+        resp = self.client.post(
+                self.url_path,
+                data=upload_data,
+                format='multipart'
+               )
+        self.assertEqual(resp.status_code, 201)
+        movie_id = int(json.loads(resp.content)['url'].split(
+                        self.url_path
+                    )[1].rstrip('/')
+                   )
+        movie_obj = Movie.objects.get(pk=movie_id)
+        self.assertNotEqual(len(movie_obj.uploaded_file.path), 0)
