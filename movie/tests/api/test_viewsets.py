@@ -11,7 +11,7 @@ from movie.models import (
                          )
 
 
-class RestApiTest(TestCase):
+class RestApiSiteUserTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
