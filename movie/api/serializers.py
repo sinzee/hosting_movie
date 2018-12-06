@@ -72,4 +72,5 @@ class MovieSerializer(serializers.ModelSerializer):
                     'uploader',
                     'movie_name',
                     'description',
+                    'uploaded_file',
                  )

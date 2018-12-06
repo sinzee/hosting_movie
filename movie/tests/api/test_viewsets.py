@@ -4,6 +4,7 @@ from unittest import mock
 
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
@@ -200,6 +201,7 @@ class RestApiMovieTest(TestCase):
 
     def test_get_correct_data_via_rest_api(self):
         resp = self.client.get(self.url_path)
+        resp_data = json.loads(resp.content)
         expected_data = [
             {
                 'url': 'http://testserver{path}{pk}/'.format(
@@ -209,12 +211,11 @@ class RestApiMovieTest(TestCase):
                 'uploader': self.site_user.pk,
                 'movie_name': self.movie_name,
                 'description': self.description,
+                'uploaded_file': resp_data[0]['uploaded_file']
             },
         ]
         self.assertEqual(
-            json.loads(
-                resp.content
-            ),
+            resp_data,
             expected_data
         )
 
@@ -248,3 +249,23 @@ class RestApiMovieTest(TestCase):
         movie_obj = Movie.objects.filter(pk=self.movie.pk)
         self.assertFalse(movie_obj.exists())
 
+#    def test_create_movie_via_rest_api(self):
+#        movie_name = 'movie title'
+#        description = 'movie desc'
+#        mp4_number_file = SimpleUploadedFile('test_movie.mp4', b'\x00\x00\x00 ftypisom\x00\x00\x02\x00')
+#        upload_data = {
+#            'uploader': self.site_user.pk,
+#            'movie_name': movie_name,
+#            'description': description,
+#            'uploaded_file': mp4_number_file,
+#        }
+#        resp = self.client.post(
+#                self.url_path,
+#                data=upload_data,
+#                format='multipart'
+#               )
+#        self.assertEqual(resp.status_code, 201)
+#        #movie_id = json.loads(resp.content)['url']
+#        movie_obj = Movie.objects.get(pk=2)
+#        #print(movie_obj.movie_name)
+#        #print(movie_obj.uploaded_file)
