@@ -29,6 +29,14 @@ class SiteUserSerializer(serializers.ModelSerializer):
                     'user',
                  )
 
+    def create(self, validated_data):
+        user_data = validated_data.pop('user', None)
+        user_data['username'] = user_data['email']
+        user_obj = User.objects.create_user(**user_data)
+        validated_data['user'] = user_obj
+        instance = super().create(validated_data)
+        return instance
+
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         super().update(instance, validated_data)

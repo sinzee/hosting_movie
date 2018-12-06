@@ -120,3 +120,34 @@ class RestApiTest(TestCase):
         user = User.objects.get(pk=self.site_user.user.pk)
         self.assertEqual(user.email, new_mail_address)
         self.assertEqual(user.username, new_mail_address)
+
+    def test_api_create_user(self):
+        bio = 'user bio'
+        email = 'user1@example.com'
+        first_name = 'user1_first'
+        last_name = 'user1_last'
+        password = 'user1_pass'
+        user_info = {
+            'bio': bio,
+            'user': {
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'password': password,
+            },
+        }
+        resp = self.client.post(
+                self.url_path,
+                content_type='application/json',
+                data=json.dumps(user_info)
+               )
+        self.assertEqual(resp.status_code, 201)
+        user_id = json.loads(resp.content)['user']['id']
+        user_obj = User.objects.get(id=user_id)
+        self.assertEqual(user_obj.email, email)
+        self.assertEqual(user_obj.first_name, first_name)
+        self.assertEqual(user_obj.last_name, last_name)
+        self.assertEqual(user_obj.username, email)
+        self.assertNotEqual(user_obj.password, password)
+        siteuser_obj = SiteUser.objects.get(user=user_obj)
+        self.assertEqual(siteuser_obj.bio, bio)
