@@ -100,3 +100,24 @@ class RestApiTest(TestCase):
         user = User.objects.get(pk=self.site_user.user.pk)
         self.assertEqual(user.first_name, new_first_name)
 
+    def test_api_update_user_first_name(self):
+        new_mail_address = 'new@example.com'
+        update_data = json.dumps(
+                        {
+                            'user': {
+                                'email': new_mail_address,
+                            },
+                        }
+                      )
+        resp = self.client.patch(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=str(self.site_user.pk)
+                ),
+                content_type='application/json',
+                data=update_data
+               )
+        self.assertEqual(resp.status_code, 200)
+        user = User.objects.get(pk=self.site_user.user.pk)
+        self.assertEqual(user.email, new_mail_address)
+        self.assertEqual(user.username, new_mail_address)

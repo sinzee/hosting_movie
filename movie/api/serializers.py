@@ -39,5 +39,8 @@ class SiteUserSerializer(serializers.ModelSerializer):
 
             for key, item in user_data.items():
                 setattr(user_obj, key, item)
+
+                if key == 'email':
+                    setattr(user_obj, 'username', item)
             user_obj.save()
         return instance
