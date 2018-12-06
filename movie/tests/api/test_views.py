@@ -60,3 +60,43 @@ class RestApiTest(TestCase):
             expected_data
         )
 
+    def test_api_updates_user_bio(self):
+        new_bio = 'new bio'
+        update_data = json.dumps(
+                        {
+                          'bio': new_bio,
+                        }
+                      )
+        resp = self.client.patch(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=str(self.site_user.pk)
+                ),
+                content_type='application/json',
+                data=update_data
+               )
+        self.assertEqual(resp.status_code, 200)
+        site_user = SiteUser.objects.get(pk=self.site_user.pk)
+        self.assertEqual(site_user.bio, new_bio)
+
+    def test_api_update_user_first_name(self):
+        new_first_name = 'new_first'
+        update_data = json.dumps(
+                        {
+                            'user': {
+                                'first_name': new_first_name,
+                            },
+                        }
+                      )
+        resp = self.client.patch(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=str(self.site_user.pk)
+                ),
+                content_type='application/json',
+                data=update_data
+               )
+        self.assertEqual(resp.status_code, 200)
+        user = User.objects.get(pk=self.site_user.user.pk)
+        self.assertEqual(user.first_name, new_first_name)
+
