@@ -1,7 +1,9 @@
 import json
 import os.path
+from unittest import mock 
 
 from django.contrib.auth.models import User
+from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
 
@@ -177,11 +179,41 @@ class RestApiMovieTest(TestCase):
                         first_name='test_first',
                         last_name='test_last',
                     )
-        site_user = SiteUser.objects.create(
+        cls.site_user = SiteUser.objects.create(
                             user=test_user,
                             bio='user bio'
                         )
+        cls.movie_name = 'movie_name'
+        cls.description = 'movie_desc'
+        upload_file = mock.MagicMock(spec=File, name='FileMock')
+        upload_file.name = 'file_name.mp4'
+        cls.movie = Movie.objects.create(
+                        uploader=cls.site_user,
+                        movie_name=cls.movie_name,
+                        description=cls.description,
+                        uploaded_file=upload_file
+                    )
 
     def test_view_url_exists_at_desired_location(self):
         resp = self.client.get(self.url_path)
         self.assertEqual(resp.status_code, 200)
+
+    def test_get_correct_data_via_rest_api(self):
+        resp = self.client.get(self.url_path)
+        expected_data = [
+            {
+                'url': 'http://testserver{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.movie.pk
+                ),
+                'uploader': self.site_user.pk,
+                'movie_name': self.movie_name,
+                'description': self.description,
+            },
+        ]
+        self.assertEqual(
+            json.loads(
+                resp.content
+            ),
+            expected_data
+        )

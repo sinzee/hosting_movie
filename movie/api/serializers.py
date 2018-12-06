@@ -60,6 +60,9 @@ class SiteUserSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+            view_name='api:movie-detail'
+          )
 
 
     class Meta:
