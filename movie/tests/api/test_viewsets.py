@@ -217,3 +217,22 @@ class RestApiMovieTest(TestCase):
             ),
             expected_data
         )
+
+    def test_update_movie_info_via_rest_api(self):
+        new_movie_name = 'new title'
+        new_data = json.dumps(
+            {
+                'movie_name': new_movie_name,
+            }
+        )
+        resp = self.client.patch(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.movie.pk
+                ),
+                content_type='application/json',
+                data=new_data
+               )
+        self.assertEqual(resp.status_code, 200)
+        movie_obj = Movie.objects.get(pk=self.movie.pk)
+        self.assertEqual(movie_obj.movie_name, new_movie_name)
