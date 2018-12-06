@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from ..models import SiteUser
+from ..models import (
+                        SiteUser,
+                        Movie,
+                     )
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,6 +22,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SiteUserSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    url = serializers.HyperlinkedIdentityField(
+            view_name='api:siteuser-detail'
+          )
 
 
     class Meta:
@@ -51,3 +57,16 @@ class SiteUserSerializer(serializers.ModelSerializer):
                     setattr(user_obj, 'username', item)
             user_obj.save()
         return instance
+
+
+class MovieSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = Movie
+        fields = (
+                    'url',
+                    'uploader',
+                    'movie_name',
+                    'description',
+                 )
