@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from movie.models import (
+                             Comment,
                              Movie,
                              SiteUser,
                          )
@@ -271,3 +272,42 @@ class RestApiMovieTest(TestCase):
                    )
         movie_obj = Movie.objects.get(pk=movie_id)
         self.assertNotEqual(len(movie_obj.uploaded_file.path), 0)
+
+class RestApiCommentTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.url_path = '/api/v1/comment/'
+
+        mail_address = 'test@example.com'
+        test_user = User.objects.create_user(
+                        username=mail_address,
+                        password='12345',
+                        email=mail_address,
+                        first_name='test_first',
+                        last_name='test_last',
+                    )
+        site_user = SiteUser.objects.create(
+                        user=test_user,
+                        bio='user bio'
+                    )
+        movie_name = 'movie_name'
+        description = 'movie_desc'
+        upload_file = mock.MagicMock(spec=File, name='FileMock')
+        upload_file.name = 'file_name.mp4'
+        movie = Movie.objects.create(
+                    uploader=site_user,
+                    movie_name=movie_name,
+                    description=description,
+                    uploaded_file=upload_file
+                )
+        cls.comment = Comment.objects.create(
+                        movie=movie,
+                        commenter=site_user,
+                        description='comment'
+                      )
+
+    def test_view_url_exists_at_desired_location(self):
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 200)
+

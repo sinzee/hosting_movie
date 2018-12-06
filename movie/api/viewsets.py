@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from ..models import (
+                        Comment,
                         Movie,
                         SiteUser,
                      )
@@ -21,3 +22,8 @@ class SiteUserListRestApiViewSet(viewsets.ModelViewSet):
 class MovieListRestApiViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = serializers.MovieSerializer
+
+
+class CommentListRestApiViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = serializers.CommentSerializer

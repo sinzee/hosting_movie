@@ -5,8 +5,9 @@ from . import viewsets
 
 
 router = routers.DefaultRouter()
-router.register(r'user', viewsets.SiteUserListRestApiViewSet)
+router.register(r'comment', viewsets.CommentListRestApiViewSet)
 router.register(r'movie', viewsets.MovieListRestApiViewSet)
+router.register(r'user', viewsets.SiteUserListRestApiViewSet)
 
 urlpatterns = [
 # TODO: Do I need to set a routing at the api endpoint?

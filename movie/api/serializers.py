@@ -2,8 +2,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from ..models import (
-                        SiteUser,
+                        Comment,
                         Movie,
+                        SiteUser,
                      )
 
 
@@ -73,4 +74,20 @@ class MovieSerializer(serializers.ModelSerializer):
                     'movie_name',
                     'description',
                     'uploaded_file',
+                 )
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+            view_name='api:comment-detail'
+          )
+
+
+    class Meta:
+        model = Comment
+        fields = (
+                    'url',
+                    'movie',
+                    'commenter',
+                    'description',
                  )
