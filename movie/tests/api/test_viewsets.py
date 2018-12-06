@@ -353,4 +353,19 @@ class RestApiCommentTest(TestCase):
         self.assertEqual(new_data['movie'], comment_obj.movie.pk)
         self.assertEqual(new_data['description'], comment_obj.description)
 
+    def test_update_comment_via_rest_api(self):
+        new_comment = 'new comment'
+        new_data = { 'description': new_comment, }
+        resp = self.client.patch(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.comment.pk
+                ),
+                content_type='application/json',
+                data=json.dumps(new_data)
+               )
+        self.assertEqual(resp.status_code, 200)
+        comment_obj = Comment.objects.get(pk=self.comment.pk)
+        self.assertEqual(comment_obj.description, new_comment)
+
 
