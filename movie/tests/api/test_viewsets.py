@@ -387,23 +387,42 @@ class RestApiSiteUserTest(TestCase):
     def setUpTestData(cls):
         cls.url_path = '/api/v1/user/'
 
-        cls.mail_address = 'test@example.com'
-        cls.first_name = 'Super'
-        cls.last_name = 'John'
-        cls.test_user = User.objects.create_user(
-                            username=cls.mail_address,
-                            password='12345',
-                            email=cls.mail_address,
-                            first_name=cls.first_name,
-                            last_name=cls.last_name,
-                        )
+        cls.normal_mail_address = 'test@example.com'
+        cls.normal_password = 'password'
+        cls.normal_user = User.objects.create_user(
+                              username=cls.normal_mail_address,
+                              password=cls.normal_password,
+                              email=cls.normal_mail_address,
+                              first_name='norm_first',
+                              last_name='norm_last',
+                          )
         cls.bio = 'user bio'
         cls.site_user = SiteUser.objects.create(
-                            user=cls.test_user,
+                            user=cls.normal_user,
                             bio=cls.bio
                         )
+        cls.admin_mail_address = 'admin@example.com'
+        cls.admin_password = 'password'
+        cls.admin_user = User.objects.create_user(
+                            username=cls.admin_mail_address,
+                            password=cls.admin_password,
+                            email=cls.admin_mail_address,
+                            first_name='adm_first',
+                            last_name='adm_last',
+                            is_staff=True
+                         )
 
     def test_not_having_logined_user_cannot_get_data_via_rest_api(self):
         resp = self.client.get(self.url_path)
         self.assertEqual(resp.status_code, 403)
+
+    def test_not_admin_user_cannot_get_data_via_rest_api(self):
+        self.client.login(username=self.normal_mail_address, password=self.normal_password)
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_admin_user_can_get_data_via_rest_api(self):
+        self.client.login(username=self.admin_mail_address, password=self.admin_password)
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 200)
 
