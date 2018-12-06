@@ -151,3 +151,14 @@ class RestApiTest(TestCase):
         self.assertNotEqual(user_obj.password, password)
         siteuser_obj = SiteUser.objects.get(user=user_obj)
         self.assertEqual(siteuser_obj.bio, bio)
+
+    def test_api_delete_user(self):
+        resp = self.client.delete(
+                '{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.site_user.pk
+                )
+               )
+        self.assertEqual(resp.status_code, 204)
+        user_obj = User.objects.filter(pk=self.test_user.pk)
+        self.assertFalse(user_obj.exists())
