@@ -331,4 +331,26 @@ class RestApiCommentTest(TestCase):
             expected_data
         )
 
+    def test_create_comment_via_rest_api(self):
+        new_data = {
+            'commenter': self.site_user.pk,
+            'movie': self.movie.pk,
+            'description': 'new_comment',
+        }
+        resp = self.client.post(
+                self.url_path,
+                content_type='application/json',
+                data=json.dumps(
+                    new_data
+                )
+               )
+        self.assertEqual(resp.status_code, 201)
+        comment_id = int(
+                        json.loads(resp.content)['url'].split(self.url_path)[1].rstrip('/')
+                     )
+        comment_obj = Comment.objects.get(pk=comment_id)
+        self.assertEqual(new_data['commenter'], comment_obj.commenter.pk)
+        self.assertEqual(new_data['movie'], comment_obj.movie.pk)
+        self.assertEqual(new_data['description'], comment_obj.description)
+
 
