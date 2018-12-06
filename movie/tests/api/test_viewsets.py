@@ -287,27 +287,48 @@ class RestApiCommentTest(TestCase):
                         first_name='test_first',
                         last_name='test_last',
                     )
-        site_user = SiteUser.objects.create(
-                        user=test_user,
-                        bio='user bio'
-                    )
+        cls.site_user = SiteUser.objects.create(
+                            user=test_user,
+                            bio='user bio'
+                        )
         movie_name = 'movie_name'
         description = 'movie_desc'
         upload_file = mock.MagicMock(spec=File, name='FileMock')
         upload_file.name = 'file_name.mp4'
-        movie = Movie.objects.create(
-                    uploader=site_user,
-                    movie_name=movie_name,
-                    description=description,
-                    uploaded_file=upload_file
-                )
+        cls.movie = Movie.objects.create(
+                        uploader=cls.site_user,
+                        movie_name=movie_name,
+                        description=description,
+                        uploaded_file=upload_file
+                    )
+        cls.comment_desc = 'comment content'
         cls.comment = Comment.objects.create(
-                        movie=movie,
-                        commenter=site_user,
-                        description='comment'
+                        movie=cls.movie,
+                        commenter=cls.site_user,
+                        description=cls.comment_desc
                       )
 
     def test_view_url_exists_at_desired_location(self):
         resp = self.client.get(self.url_path)
         self.assertEqual(resp.status_code, 200)
+
+    def test_get_correct_data_via_rest_api(self):
+        resp = self.client.get(self.url_path)
+        resp_data = json.loads(resp.content)
+        expected_data = [
+            {
+                'url': 'http://testserver{path}{pk}/'.format(
+                    path=self.url_path,
+                    pk=self.comment.pk
+                ),
+                'commenter': self.site_user.pk,
+                'movie': self.movie.pk,
+                'description': self.comment_desc,
+            },
+        ]
+        self.assertEqual(
+            resp_data,
+            expected_data
+        )
+
 
