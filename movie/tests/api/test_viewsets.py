@@ -381,3 +381,29 @@ class RestApiCommentTest(TestCase):
         self.assertFalse(comment_obj.exists())
         
 
+class RestApiSiteUserTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.url_path = '/api/v1/user/'
+
+        cls.mail_address = 'test@example.com'
+        cls.first_name = 'Super'
+        cls.last_name = 'John'
+        cls.test_user = User.objects.create_user(
+                            username=cls.mail_address,
+                            password='12345',
+                            email=cls.mail_address,
+                            first_name=cls.first_name,
+                            last_name=cls.last_name,
+                        )
+        cls.bio = 'user bio'
+        cls.site_user = SiteUser.objects.create(
+                            user=cls.test_user,
+                            bio=cls.bio
+                        )
+
+    def test_not_having_logined_user_cannot_get_data_via_rest_api(self):
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 403)
+

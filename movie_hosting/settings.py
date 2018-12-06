@@ -134,3 +134,10 @@ if DEBUG:
 DEFAULT_FROM_EMAIL = 'test@example.com'
 
 LOGIN_REDIRECT_URL = '/'
+
+# django REST framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    ),
+}
