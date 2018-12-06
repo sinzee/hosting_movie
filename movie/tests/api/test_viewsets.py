@@ -162,3 +162,26 @@ class RestApiSiteUserTest(TestCase):
         self.assertEqual(resp.status_code, 204)
         user_obj = User.objects.filter(pk=self.test_user.pk)
         self.assertFalse(user_obj.exists())
+
+class RestApiMovieTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.url_path = '/api/v1/movie/'
+
+        mail_address = 'test@example.com'
+        test_user = User.objects.create_user(
+                        username=mail_address,
+                        password='12345',
+                        email=mail_address,
+                        first_name='test_first',
+                        last_name='test_last',
+                    )
+        site_user = SiteUser.objects.create(
+                            user=test_user,
+                            bio='user bio'
+                        )
+
+    def test_view_url_exists_at_desired_location(self):
+        resp = self.client.get(self.url_path)
+        self.assertEqual(resp.status_code, 200)

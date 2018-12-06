@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from ..models import (
+                        Movie,
                         SiteUser,
                      )
 from . import serializers
@@ -15,3 +16,8 @@ class SiteUserListRestApiViewSet(viewsets.ModelViewSet):
         result = super(SiteUserListRestApiViewSet, self).destroy(request, *args, **kwargs)
         user_obj.delete()
         return result
+
+
+class MovieListRestApiViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = serializers.MovieSerializer
